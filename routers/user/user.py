@@ -16,7 +16,8 @@ async def registration(user: RegisterModel):
         user.email,
         user.first_name,
         user.surname,
-        user.password
+        user.password,
+        user.password_confirm
     )
     return user_data
 

@@ -18,9 +18,13 @@ def validate_password(password: str):
         raise HTTPException(status_code=400, detail="Password must contain at least one digit")
 
 
-async def registration(login: str, email: str, first_name: str, surname: str, password: str):
+async def registration(login: str, email: str, first_name: str,
+                       surname: str, password: str, password_confirm: str):
     if await objects.count(User.select().where(User.login == login)) > 0:
         raise HTTPException(status_code=400, detail="Login already exists")
+
+    if password != password_confirm:
+        raise HTTPException(status_code=400, detail="Passwords do not match")
 
     validate_password(password)
 

@@ -7,6 +7,7 @@ class RegisterModel(BaseModel):
     first_name: str = Field(..., min_length=1)
     surname: str = Field(..., min_length=1)
     password: str = Field(..., min_length=8)
+    password_confirm: str = Field(..., min_length=8)
 
 
 class DeleteAvatarModel(BaseModel):
