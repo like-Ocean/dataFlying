@@ -1,4 +1,4 @@
-from peewee import TextField, AutoField
+from peewee import TextField, AutoField, IntegerField
 from database import BaseModel
 
 
@@ -6,8 +6,9 @@ class User(BaseModel):
     id = AutoField(primary_key=True, unique=True)
     login = TextField(null=False, unique=True)
     email = TextField(null=False)
-    first_name = TextField(null=False)
-    surname = TextField(null=False)
+    role = IntegerField(null=False)
+    IMEI = TextField(null=False)
+    phone_number = TextField(null=False)
     password = TextField(null=False)
 
     def get_dto(self):
@@ -15,8 +16,9 @@ class User(BaseModel):
             'id': self.id,
             'login': self.login,
             'email': self.email,
-            'first_name': self.first_name,
-            'surname': self.surname
+            'role': self.role,
+            'IMEI': self.IMEI,
+            'phone_number': self.phone_number
         }
 
     class Meta:

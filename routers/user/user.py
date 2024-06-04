@@ -14,8 +14,6 @@ async def registration(user: RegisterModel):
     user_data = await user_service.registration(
         user.login,
         user.email,
-        user.first_name,
-        user.surname,
         user.password,
         user.password_confirm
     )
@@ -52,9 +50,7 @@ async def edit_user(user: ChangeModel, current_user: User = Depends(get_current_
     user_data = await user_service.change_user(
         user.user_id,
         user.login,
-        user.email,
-        user.first_name,
-        user.surname
+        user.email
     )
     return user_data
 

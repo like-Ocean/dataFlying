@@ -18,8 +18,7 @@ def validate_password(password: str):
         raise HTTPException(status_code=400, detail="Password must contain at least one digit")
 
 
-async def registration(login: str, email: str, first_name: str,
-                       surname: str, password: str, password_confirm: str):
+async def registration(login: str, email: str, password: str, password_confirm: str):
     if await objects.count(User.select().where(User.login == login)) > 0:
         raise HTTPException(status_code=400, detail="Login already exists")
 
@@ -32,8 +31,9 @@ async def registration(login: str, email: str, first_name: str,
         User,
         login=login,
         email=email,
-        first_name=first_name,
-        surname=surname,
+        role=1,
+        # IMEI=IMEI,
+        # phone_number=phone_number,
         password=generate_password_hash(password)
     )
     user = await objects.get_or_none(User.select().where(User.id == user.id))
@@ -85,7 +85,7 @@ async def get_current_user(request: Request):
     return user
 
 
-async def change_user(user_id: int, login: str, email: str, first_name: str, surname: str):
+async def change_user(user_id: int, login: str, email: str):
     user = await objects.get_or_none(User.select().where(User.id == user_id))
     if not user:
         raise HTTPException(status_code=400, detail="User not found")
@@ -95,8 +95,6 @@ async def change_user(user_id: int, login: str, email: str, first_name: str, sur
 
     user.login = login or user.login
     user.email = email or user.email
-    user.first_name = first_name or user.first_name
-    user.surname = surname or user.surname
 
     await objects.update(user)
 
