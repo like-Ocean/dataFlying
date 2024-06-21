@@ -3,16 +3,15 @@ from peewee import TextField, AutoField, ForeignKeyField
 from database import BaseModel
 
 
-# IMEI то же вторичный ключ ?
 class Flight(BaseModel):
     id = AutoField(primary_key=True, unique=True)
-    IMEI = TextField(null=False)
+    user_IMEI = ForeignKeyField(User, backref='flights_IMEI', on_delete='CASCADE')
     user_phone_number = ForeignKeyField(User, backref='flights', on_delete='CASCADE')
 
     def get_dto(self):
         return {
             'id': self.id,
-            'IMEI': self.IMEI,
+            'IMEI': self.user_IMEI.IMEI,
             'user_phone_number': self.user_phone_number.phone_number
         }
 
