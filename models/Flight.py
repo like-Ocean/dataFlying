@@ -11,7 +11,7 @@ class Flight(BaseModel):
     def get_dto(self):
         return {
             'id': self.id,
-            'IMEI': self.user_IMEI.IMEI,
+            'user_IMEI': self.user_IMEI.IMEI,
             'user_phone_number': self.user_phone_number.phone_number
         }
 

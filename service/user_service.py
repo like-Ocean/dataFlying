@@ -32,8 +32,6 @@ async def registration(login: str, email: str, password: str, password_confirm: 
         login=login,
         email=email,
         role=1,
-        # IMEI=IMEI,
-        # phone_number=phone_number,
         password=generate_password_hash(password)
     )
     user = await objects.get_or_none(User.select().where(User.id == user.id))
@@ -85,7 +83,7 @@ async def get_current_user(request: Request):
     return user
 
 
-async def change_user(user_id: int, login: str, email: str):
+async def change_user(user_id: int, login: str, email: str, IMEI: str, phone_number: str):
     user = await objects.get_or_none(User.select().where(User.id == user_id))
     if not user:
         raise HTTPException(status_code=400, detail="User not found")
@@ -95,6 +93,8 @@ async def change_user(user_id: int, login: str, email: str):
 
     user.login = login or user.login
     user.email = email or user.email
+    user.IMEI = IMEI or user.IMEI
+    user.phone_number = phone_number or user.phone_number
 
     await objects.update(user)
 

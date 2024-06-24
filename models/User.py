@@ -6,9 +6,9 @@ class User(BaseModel):
     id = AutoField(primary_key=True, unique=True)
     login = TextField(null=False, unique=True)
     email = TextField(null=False)
-    role = IntegerField(null=False)
-    IMEI = TextField(null=False)
-    phone_number = TextField(null=False)
+    role = IntegerField(null=True)
+    IMEI = TextField(null=True, default=None)
+    phone_number = TextField(null=True, default=None)
     password = TextField(null=False)
 
     def get_dto(self):

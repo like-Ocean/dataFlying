@@ -50,7 +50,9 @@ async def edit_user(user: ChangeModel, current_user: User = Depends(get_current_
     user_data = await user_service.change_user(
         user.user_id,
         user.login,
-        user.email
+        user.email,
+        user.IMEI,
+        user.phone_number
     )
     return user_data
 
