@@ -4,7 +4,7 @@ from starlette.responses import JSONResponse
 from models import User
 from service import user_service
 from service.user_service import get_current_user
-from .user_scheme import RegisterModel, ChangeModel, DeleteUserModel, ChangePasswordModel, Authorization
+from .user_scheme import RegisterModel, ChangeModel, DeleteUserModel, ChangePasswordModel, Authorization, Item
 
 user_router = APIRouter(prefix="/users", tags=["users"])
 
@@ -79,3 +79,9 @@ async def get_all_user():
 async def get_user(user_id):
     user_data = await user_service.get_user(user_id)
     return user_data
+
+
+@user_router.post("/items/")
+async def create_item(item: Item):
+    print(item)
+    return item
