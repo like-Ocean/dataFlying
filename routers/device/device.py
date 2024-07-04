@@ -26,6 +26,12 @@ async def get_devices():
     return devices
 
 
+@device_router.get("/flights")
+async def get_flights():
+    flights = await device_service.get_flights()
+    return flights
+
+
 @device_router.post("/add/data")
 async def add_data(data: SensorDataModel):
     result = await device_service.get_and_write_data(data)
