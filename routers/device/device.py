@@ -20,6 +20,12 @@ async def remove_device_route(device_model: RemoveDeviceModel, current_user: Use
     return Response(status_code=204)
 
 
+@device_router.get("/")
+async def get_devices():
+    devices = await device_service.get_devices()
+    return devices
+
+
 @device_router.post("/add/data")
 async def add_data(data: SensorDataModel):
     result = await device_service.get_and_write_data(data)

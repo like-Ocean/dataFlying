@@ -80,3 +80,6 @@ async def get_and_write_data(data):
     return flight.get_dto()
 
 
+async def get_devices():
+    devices = await objects.execute(Device.select())
+    return [device.get_dto() for device in devices]
