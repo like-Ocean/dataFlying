@@ -1,11 +1,11 @@
-from models import Time
+from models import Flight
 from database import BaseModel
 from peewee import AutoField, ForeignKeyField, FloatField
 
 
 class Magnetometer(BaseModel):
     id = AutoField(primary_key=True, unique=True)
-    time = ForeignKeyField(Time, backref='magnetometers', on_delete='CASCADE')
+    flight = ForeignKeyField(Flight, backref='magnetometers', on_delete='CASCADE')
     X = FloatField(null=False)
     Y = FloatField(null=False)
     Z = FloatField(null=False)
@@ -13,9 +13,8 @@ class Magnetometer(BaseModel):
     def get_dto(self):
         return {
             'id': self.id,
-            'time': {
-                'time': self.time.time,
-                'flight': self.time.flight.id,
+            'flight': {
+                'id': self.flight.id,
             },
             'X': self.X,
             'Y': self.Y,

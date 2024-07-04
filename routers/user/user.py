@@ -4,7 +4,7 @@ from starlette.responses import JSONResponse
 from models import User
 from service import user_service
 from service.user_service import get_current_user
-from .user_scheme import RegisterModel, ChangeModel, DeleteUserModel, ChangePasswordModel, Authorization, Item
+from .user_scheme import (RegisterModel, DeleteUserModel, ChangePasswordModel, Authorization, Item)
 
 user_router = APIRouter(prefix="/users", tags=["users"])
 
@@ -43,18 +43,6 @@ async def logout():
     response = Response(status_code=200)
     response.set_cookie(key="session", value="", httponly=True)
     return response
-
-
-@user_router.patch("/user/edit")
-async def edit_user(user: ChangeModel, current_user: User = Depends(get_current_user)):
-    user_data = await user_service.change_user(
-        user.user_id,
-        user.login,
-        user.email,
-        user.IMEI,
-        user.phone_number
-    )
-    return user_data
 
 
 @user_router.patch("/user/edit/password")

@@ -12,14 +12,6 @@ class DeleteAvatarModel(BaseModel):
     user_id: int = Field(...)
 
 
-class ChangeModel(BaseModel):
-    user_id: int = Field(...)
-    login: str | None = Field(None)
-    email: EmailStr | None = Field(None)
-    IMEI: str | None = Field(None)
-    phone_number: str | None = Field(None)
-
-
 class DeleteUserModel(BaseModel):
     user_id: int = Field(...)
 

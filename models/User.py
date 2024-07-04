@@ -7,8 +7,6 @@ class User(BaseModel):
     login = TextField(null=False, unique=True)
     email = TextField(null=False)
     role = IntegerField(null=True)
-    IMEI = TextField(null=True, default=None)
-    phone_number = TextField(null=True, default=None)
     password = TextField(null=False)
 
     def get_dto(self):
@@ -16,9 +14,7 @@ class User(BaseModel):
             'id': self.id,
             'login': self.login,
             'email': self.email,
-            'role': self.role,
-            'IMEI': self.IMEI,
-            'phone_number': self.phone_number
+            'role': self.role
         }
 
     class Meta:

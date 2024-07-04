@@ -83,24 +83,6 @@ async def get_current_user(request: Request):
     return user
 
 
-async def change_user(user_id: int, login: str, email: str, IMEI: str, phone_number: str):
-    user = await objects.get_or_none(User.select().where(User.id == user_id))
-    if not user:
-        raise HTTPException(status_code=400, detail="User not found")
-
-    if await objects.count(User.select().where((User.login == login) & (User.id != user_id))) > 0:
-        raise HTTPException(status_code=400, detail="User with this login already exists")
-
-    user.login = login or user.login
-    user.email = email or user.email
-    user.IMEI = IMEI or user.IMEI
-    user.phone_number = phone_number or user.phone_number
-
-    await objects.update(user)
-
-    return user.get_dto()
-
-
 async def change_password(user_id: int, password: str):
     user = await objects.get_or_none(User.select().where(User.id == user_id))
     if not user:

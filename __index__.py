@@ -8,8 +8,8 @@ from dotenv import load_dotenv
 import os
 
 from database import db
-from models import (User, Session, Feature, Plan, PlanFeature, Subscription,
-                    Flight, Time, Accelerometer, Gps, Gyroscope, Temperature,
+from models import (User, Device, Session, Feature, Plan, PlanFeature, Subscription,
+                    Flight, Accelerometer, Gps, Gyroscope, Temperature,
                     Magnetometer, Barometer)
 from routers import routes
 
@@ -40,9 +40,9 @@ app.add_middleware(
 
 if __name__ == '__main__':
     with db:
-        db.create_tables([User, Session, Feature, Plan, PlanFeature, Subscription,
-                          Flight, Time, Accelerometer, Gps, Gyroscope, Temperature,
-                          Magnetometer, Barometer])
+        db.create_tables([User, Device, Session, Feature, Plan, PlanFeature, Subscription,
+                          Flight, Accelerometer, Gps, Gyroscope,
+                          Temperature, Magnetometer, Barometer])
     uvicorn.run(
         "__index__:app",
         host=os.environ.get("HOST"),

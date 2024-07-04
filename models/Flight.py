@@ -1,18 +1,30 @@
-from models import User
-from peewee import TextField, AutoField, ForeignKeyField
+from models import Device
+from peewee import DateTimeField, AutoField, ForeignKeyField, IntegerField
 from database import BaseModel
 
 
+# flight_number - уникальный для каждого юзера
 class Flight(BaseModel):
     id = AutoField(primary_key=True, unique=True)
-    user_IMEI = ForeignKeyField(User, backref='flights_IMEI', on_delete='CASCADE')
-    user_phone_number = ForeignKeyField(User, backref='flights', on_delete='CASCADE')
+    flight_number = IntegerField(null=False, unique=False)
+    IMEI = ForeignKeyField(Device, backref='flight', on_delete='CASCADE', null=False)
+    time = DateTimeField(null=False, unique=False)
 
     def get_dto(self):
         return {
             'id': self.id,
-            'user_IMEI': self.user_IMEI.IMEI,
-            'user_phone_number': self.user_phone_number.phone_number
+            'flight_number': self.flight_number,
+            'device': {
+                'id': self.IMEI.id,
+                'user': {
+                    'id': self.IMEI.user.id,
+                    'login': self.IMEI.user.login,
+                    'email': self.IMEI.user.email,
+                    'role': self.IMEI.user.role
+                },
+                'IMEI': self.IMEI.IMEI,
+            },
+            'time': self.time
         }
 
     class Meta:

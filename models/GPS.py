@@ -1,11 +1,11 @@
-from models import Time
+from models import Flight
 from database import BaseModel
 from peewee import AutoField, ForeignKeyField, FloatField
 
 
 class Gps(BaseModel):
     id = AutoField(primary_key=True, unique=True)
-    time = ForeignKeyField(Time, backref='gps', on_delete='CASCADE')
+    flight = ForeignKeyField(Flight, backref='gps', on_delete='CASCADE')
     latitude = FloatField(null=False)
     longitude = FloatField(null=False)
     altitude_gps = FloatField(null=False)
@@ -13,9 +13,8 @@ class Gps(BaseModel):
     def get_dto(self):
         return {
             'id': self.id,
-            'time': {
-                'time': self.time.time,
-                'flight': self.time.flight.id,
+            'flight': {
+                'id': self.flight.id,
             },
             'latitude': self.latitude,
             'longitude': self.longitude,
