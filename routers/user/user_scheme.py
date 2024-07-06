@@ -25,8 +25,3 @@ class Authorization(BaseModel):
     login: str = Field(..., min_length=1)
     password: str = Field(..., min_length=8)
 
-
-class Item(BaseModel):
-    key1: str = Field()
-    key2: str = Field()
-

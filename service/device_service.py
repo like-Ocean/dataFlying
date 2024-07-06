@@ -80,11 +80,46 @@ async def get_and_write_data(data):
     return flight.get_dto()
 
 
-async def get_devices():
-    devices = await objects.execute(Device.select())
+async def get_user_devices(user_id: int):
+    user = await objects.get_or_none(User.select().where(User.id == user_id))
+    if not user:
+        raise HTTPException(status_code=400, detail="User not found")
+
+    devices = await objects.execute(Device.select().where(Device.user == user))
+
     return [device.get_dto() for device in devices]
 
 
-async def get_flights():
-    flights = await objects.execute(Flight.select())
+async def get_user_device(user_id: int, device_id: int):
+    user = await objects.get_or_none(User.select().where(User.id == user_id))
+    if not user:
+        raise HTTPException(status_code=400, detail="User not found")
+
+    device = await objects.get_or_none(Device.select().where(Device.user == user, Device.id == device_id))
+    if not device:
+        raise HTTPException(status_code=400, detail="Device not found")
+
+    return device.get_dto()
+
+
+async def get_user_flights(user_id: int):
+    user = await objects.get_or_none(User.select().where(User.id == user_id))
+    if not user:
+        raise HTTPException(status_code=400, detail="User not found")
+
+    flights = await objects.execute(Flight.select().join(Device).where(Device.user == user))
+
     return [flight.get_dto() for flight in flights]
+
+
+async def get_user_flight(user_id: int, flight_id: int):
+    user = await objects.get_or_none(User.select().where(User.id == user_id))
+    if not user:
+        raise HTTPException(status_code=400, detail="User not found")
+
+    flight = await objects.get_or_none(Flight.select().join(Device).where(Device.user == user, Flight.id == flight_id))
+    if not flight:
+        raise HTTPException(status_code=400, detail="Flight not found")
+
+    return flight.get_dto()
+

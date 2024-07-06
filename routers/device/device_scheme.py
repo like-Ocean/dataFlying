@@ -43,3 +43,21 @@ class SensorDataModel(BaseModel):
     longitude: float = Field(...)
     altitude_gps: float = Field(...)
     time: datetime
+
+
+# class UserDevices(BaseModel):
+#     user_id: int = Field(...)
+#
+#
+# class UserDevice(BaseModel):
+#     user_id: int = Field(...)
+#     device_id: int = Field(...)
+#
+#
+# class UserFlights(BaseModel):
+#     user_id: int = Field(...)
+#
+#
+# class UserFlight(BaseModel):
+#     user_id: int = Field(...)
+#     flight_id: int = Field(...)
