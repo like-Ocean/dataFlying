@@ -44,7 +44,7 @@ async def get_user_flights(user_id, current_user: User = Depends(get_current_use
     return flights_data
 
 
-@device_router.get("/user/{user_id}/flight/{flight_id}")
-async def get_user_flight(user_id, flight_id,current_user: User = Depends(get_current_user)):
-    flights_data = await device_service.get_user_flight(user_id, flight_id)
-    return flights_data
+@device_router.get("/user/{user_id}/{flight_id}")
+async def get_user_flight(user_id, flight_id, current_user: User = Depends(get_current_user)):
+    flight_data = await device_service.get_user_flight(user_id, flight_id)
+    return flight_data
