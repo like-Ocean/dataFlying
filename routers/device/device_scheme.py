@@ -51,7 +51,6 @@ class SensorDataModel(BaseModel):
 #
 # class UserDevice(BaseModel):
 #     user_id: int = Field(...)
-#     device_id: int = Field(...)
 #
 #
 # class UserFlights(BaseModel):
@@ -60,4 +59,4 @@ class SensorDataModel(BaseModel):
 #
 # class UserFlight(BaseModel):
 #     user_id: int = Field(...)
-#     flight_id: int = Field(...)
+

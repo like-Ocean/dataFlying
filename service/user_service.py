@@ -20,7 +20,7 @@ def validate_password(password: str):
 
 async def registration(login: str, email: str, password: str, password_confirm: str):
     if await objects.count(User.select().where(User.login == login)) > 0:
-        raise HTTPException(status_code=400, detail="Login already exists")
+        raise HTTPException(status_code=409, detail="Login already exists")
 
     if password != password_confirm:
         raise HTTPException(status_code=400, detail="Passwords do not match")
