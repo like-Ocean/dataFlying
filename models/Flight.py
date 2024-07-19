@@ -3,7 +3,6 @@ from peewee import DateTimeField, AutoField, ForeignKeyField, IntegerField
 from database import BaseModel
 
 
-# flight_number - уникальный для каждого юзера
 class Flight(BaseModel):
     id = AutoField(primary_key=True, unique=True)
     flight_number = IntegerField(null=False, unique=False)

@@ -1,3 +1,5 @@
+from typing import Optional
+from datetime import datetime
 from fastapi import HTTPException
 from peewee import DoesNotExist
 from models import User, Device, Flight, Accelerometer, Barometer, Gps, Gyroscope, Magnetometer, Temperature
@@ -102,14 +104,27 @@ async def get_user_device(user_id: int, device_id: int):
     return device.get_dto()
 
 
-async def get_user_flights(user_id: int):
+async def get_user_flights(user_id: int, imei: Optional[str] = None,
+                           start_date: Optional[datetime] = None, page: int = 1, page_size: int = 20):
     user = await objects.get_or_none(User.select().where(User.id == user_id))
     if not user:
         raise HTTPException(status_code=400, detail="User not found")
 
-    flights = await objects.execute(Flight.select().join(Device).where(Device.user == user))
+    query = Flight.select().join(Device).join(User).where(User.id == user_id)
+    if imei:
+        query = query.where(Device.IMEI == imei)
+    if start_date:
+        query = query.where(Flight.time >= start_date)
 
-    return [flight.get_dto() for flight in flights]
+    total_flights = await objects.count(query)
+    flights = await objects.execute(query.paginate(page, page_size))
+
+    return {
+        'total': total_flights,
+        'page': page,
+        'page_size': page_size,
+        'flights': [flight.get_dto() for flight in flights]
+    }
 
 
 async def get_user_flight(user_id: int, flight_id: int):

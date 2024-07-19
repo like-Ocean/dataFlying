@@ -1,4 +1,6 @@
-from fastapi import APIRouter, Response, Depends
+from typing import Optional
+from datetime import datetime
+from fastapi import APIRouter, Response, Depends, Query
 from service import device_service
 from models import User
 from service.user_service import get_current_user
@@ -39,8 +41,12 @@ async def add_data(data: SensorDataModel):
 
 
 @device_router.get("/user/{user_id}/flights")
-async def get_user_flights(user_id, current_user: User = Depends(get_current_user)):
-    flights_data = await device_service.get_user_flights(user_id)
+async def get_user_flights(user_id, imei: Optional[str] = Query(None),
+                           start_date: Optional[datetime] = Query(None),
+                           page: int = Query(1, ge=1),
+                           page_size: int = Query(20, ge=1, le=100),
+                           current_user: User = Depends(get_current_user)):
+    flights_data = await device_service.get_user_flights(user_id, imei, start_date, page, page_size)
     return flights_data
 
 
