@@ -155,3 +155,36 @@ async def get_user_flight(user_id: int, flight_id: int):
 
     return flight_data
 
+
+async def get_flight_by_flight_number(user_id: int, flight_number: int):
+    user = await objects.get_or_none(User.select().where(User.id == user_id))
+    if not user:
+        raise HTTPException(status_code=400, detail="User not found")
+
+    flight = await objects.get_or_none(
+        Flight.select()
+        .join(Device)
+        .where((Flight.flight_number == flight_number) & (Device.user == user))
+    )
+    if not flight:
+        raise HTTPException(status_code=400, detail="Flight not found")
+
+    accelerometers = await objects.execute(Accelerometer.select().where(Accelerometer.flight == flight))
+    barometers = await objects.execute(Barometer.select().where(Barometer.flight == flight))
+    gps_data = await objects.execute(Gps.select().where(Gps.flight == flight))
+    gyroscopes = await objects.execute(Gyroscope.select().where(Gyroscope.flight == flight))
+    magnetometers = await objects.execute(Magnetometer.select().where(Magnetometer.flight == flight))
+    temperatures = await objects.execute(Temperature.select().where(Temperature.flight == flight))
+
+    flight_data = flight.get_dto()
+    flight_data['sensors'] = {
+        'accelerometers': [sensor.get_dto() for sensor in accelerometers],
+        'barometers': [sensor.get_dto() for sensor in barometers],
+        'gps_data': [sensor.get_dto() for sensor in gps_data],
+        'gyroscopes': [sensor.get_dto() for sensor in gyroscopes],
+        'magnetometers': [sensor.get_dto() for sensor in magnetometers],
+        'temperatures': [sensor.get_dto() for sensor in temperatures],
+    }
+
+    return flight_data
+
