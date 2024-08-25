@@ -38,11 +38,8 @@ async def get_and_write_data(data):
     except DoesNotExist:
         raise HTTPException(status_code=404, detail="Device not found")
 
-    flights = await objects.execute(Flight.select().where(Flight.IMEI == device).order_by(Flight.flight_number.desc()))
-    last_flight = flights[0] if flights else None
-    flight_number = (last_flight.flight_number + 1) if last_flight else 1
-
-    flight = await objects.create(Flight, flight_number=flight_number, IMEI=device, time=data.time)
+    # flight_number теперь с устройства приходит
+    flight = await objects.create(Flight, flight_number=data.flight_number, IMEI=device, time=data.time)
 
     await objects.create(
         Accelerometer,
@@ -168,13 +165,24 @@ async def get_flight_by_flight_number(user_id: int, flight_number: int):
     )
     if not flight:
         raise HTTPException(status_code=400, detail="Flight not found")
-
-    accelerometers = await objects.execute(Accelerometer.select().where(Accelerometer.flight == flight))
-    barometers = await objects.execute(Barometer.select().where(Barometer.flight == flight))
-    gps_data = await objects.execute(Gps.select().where(Gps.flight == flight))
-    gyroscopes = await objects.execute(Gyroscope.select().where(Gyroscope.flight == flight))
-    magnetometers = await objects.execute(Magnetometer.select().where(Magnetometer.flight == flight))
-    temperatures = await objects.execute(Temperature.select().where(Temperature.flight == flight))
+    accelerometers = await objects.execute(
+        Accelerometer.select().join(Flight).where(Flight.flight_number == flight_number)
+    )
+    barometers = await objects.execute(
+        Barometer.select().join(Flight).where(Flight.flight_number == flight_number)
+    )
+    gps_data = await objects.execute(
+        Gps.select().join(Flight).where(Flight.flight_number == flight_number)
+    )
+    gyroscopes = await objects.execute(
+        Gyroscope.select().join(Flight).where(Flight.flight_number == flight_number)
+    )
+    magnetometers = await objects.execute(
+        Magnetometer.select().join(Flight).where(Flight.flight_number == flight_number)
+    )
+    temperatures = await objects.execute(
+        Temperature.select().join(Flight).where(Flight.flight_number == flight_number)
+    )
 
     flight_data = flight.get_dto()
     flight_data['sensors'] = {
