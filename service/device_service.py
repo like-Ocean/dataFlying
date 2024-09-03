@@ -113,6 +113,8 @@ async def get_user_flights(user_id: int, imei: Optional[str] = None,
     if start_date:
         query = query.where(Flight.time >= start_date)
 
+    query = query.order_by(Flight.flight_number)
+
     total_flights = await objects.count(query)
     flights = await objects.execute(query.paginate(page, page_size))
 
