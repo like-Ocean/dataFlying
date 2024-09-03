@@ -1,7 +1,7 @@
 from typing import Optional
 from datetime import datetime
 from fastapi import HTTPException
-from peewee import DoesNotExist
+from peewee import DoesNotExist, fn
 from models import User, Device, Flight, Accelerometer, Barometer, Gps, Gyroscope, Magnetometer, Temperature
 
 from database import objects
@@ -107,13 +107,15 @@ async def get_user_flights(user_id: int, imei: Optional[str] = None,
     if not user:
         raise HTTPException(status_code=400, detail="User not found")
 
-    query = Flight.select().join(Device).join(User).where(User.id == user_id)
+    query = Flight.select(
+        Flight.flight_number,
+        Flight.IMEI,
+        fn.MIN(Flight.time).alias('time')
+    ).join(Device).join(User).where(User.id == user_id).group_by(Flight.flight_number, Flight.IMEI).order_by(Flight.flight_number)
     if imei:
         query = query.where(Device.IMEI == imei)
     if start_date:
         query = query.where(Flight.time >= start_date)
-
-    query = query.order_by(Flight.flight_number)
 
     total_flights = await objects.count(query)
     flights = await objects.execute(query.paginate(page, page_size))
