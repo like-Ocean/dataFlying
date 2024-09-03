@@ -32,6 +32,7 @@ class MagnetometerModel(BaseModel):
 
 class SensorDataModel(BaseModel):
     imei: str = Field(...)
+    flight_number: int = Field(...)
     acceleration: AccelerationModel
     gyro: GyroModel
     magnetometer: MagnetometerModel
