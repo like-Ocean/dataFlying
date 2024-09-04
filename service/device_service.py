@@ -172,7 +172,7 @@ async def get_flight_by_flight_number(user_id: int, flight_number: int, IMEI: st
 
         for flight in flights:
             accelerometers = await objects.execute(
-                Accelerometer.select().join(Flight, on=(Flight.id == Accelerometer.flight)).where(Flight.flight_number == flight_number)
+                Accelerometer.select().join(Flight).where(Flight.flight_number == flight_number)
             )
             barometers = await objects.execute(
                 Barometer.select().join(Flight).where(Flight.flight_number == flight_number)
