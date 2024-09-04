@@ -157,46 +157,48 @@ async def get_user_flight(user_id: int, flight_id: int):
     return flight_data
 
 
-async def get_flight_by_flight_number(user_id: int, flight_number: int):
-    user = await objects.get_or_none(User.select().where(User.id == user_id))
-    if not user:
+async def get_flight_by_flight_number(user_id: int, flight_number: int, IMEI: str):
+    users = await objects.execute(User.select().where(User.id == user_id))
+    if not users:
         raise HTTPException(status_code=400, detail="User not found")
+    for user in users:
+        flights = await objects.execute(
+            Flight.select()
+            .join(Device)
+            .where((Flight.flight_number == flight_number) & (Device.user == user) & (Device.IMEI == IMEI))
+        )
+        if not flights:
+            raise HTTPException(status_code=400, detail="Flight not found")
+        for flight in flights:
+            accelerometers = await objects.execute(
+                Accelerometer.select().join(Flight).where(Flight.flight_number == flight_number)
+            )
+            barometers = await objects.execute(
+                Barometer.select().join(Flight).where(Flight.flight_number == flight_number)
+            )
+            gps_data = await objects.execute(
+                Gps.select().join(Flight).where(Flight.flight_number == flight_number)
+            )
+            gyroscopes = await objects.execute(
+                Gyroscope.select().join(Flight).where(Flight.flight_number == flight_number)
+            )
+            magnetometers = await objects.execute(
+                Magnetometer.select().join(Flight).where(Flight.flight_number == flight_number)
+            )
+            temperatures = await objects.execute(
+                Temperature.select().join(Flight).where(Flight.flight_number == flight_number)
+            )
 
-    flight = await objects.get_or_none(
-        Flight.select()
-        .join(Device)
-        .where((Flight.flight_number == flight_number) & (Device.user == user))
-    )
-    if not flight:
-        raise HTTPException(status_code=400, detail="Flight not found")
-    accelerometers = await objects.execute(
-        Accelerometer.select().join(Flight).where(Flight.flight_number == flight_number)
-    )
-    barometers = await objects.execute(
-        Barometer.select().join(Flight).where(Flight.flight_number == flight_number)
-    )
-    gps_data = await objects.execute(
-        Gps.select().join(Flight).where(Flight.flight_number == flight_number)
-    )
-    gyroscopes = await objects.execute(
-        Gyroscope.select().join(Flight).where(Flight.flight_number == flight_number)
-    )
-    magnetometers = await objects.execute(
-        Magnetometer.select().join(Flight).where(Flight.flight_number == flight_number)
-    )
-    temperatures = await objects.execute(
-        Temperature.select().join(Flight).where(Flight.flight_number == flight_number)
-    )
+            flight_data = flight.get_dto()
+            flight_data['sensors'] = {
+                'accelerometers': [sensor.get_dto() for sensor in accelerometers],
+                'barometers': [sensor.get_dto() for sensor in barometers],
+                'gps_data': [sensor.get_dto() for sensor in gps_data],
+                'gyroscopes': [sensor.get_dto() for sensor in gyroscopes],
+                'magnetometers': [sensor.get_dto() for sensor in magnetometers],
+                'temperatures': [sensor.get_dto() for sensor in temperatures],
+                'time': flight.time,
+            }
 
-    flight_data = flight.get_dto()
-    flight_data['sensors'] = {
-        'accelerometers': [sensor.get_dto() for sensor in accelerometers],
-        'barometers': [sensor.get_dto() for sensor in barometers],
-        'gps_data': [sensor.get_dto() for sensor in gps_data],
-        'gyroscopes': [sensor.get_dto() for sensor in gyroscopes],
-        'magnetometers': [sensor.get_dto() for sensor in magnetometers],
-        'temperatures': [sensor.get_dto() for sensor in temperatures],
-    }
-
-    return flight_data
+            return flight_data
 
