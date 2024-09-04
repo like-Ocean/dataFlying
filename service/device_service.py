@@ -169,6 +169,7 @@ async def get_flight_by_flight_number(user_id: int, flight_number: int, IMEI: st
         )
         if not flights:
             raise HTTPException(status_code=400, detail="Flight not found")
+
         for flight in flights:
             accelerometers = await objects.execute(
                 Accelerometer.select().join(Flight).where(Flight.flight_number == flight_number)
@@ -190,15 +191,15 @@ async def get_flight_by_flight_number(user_id: int, flight_number: int, IMEI: st
             )
 
             flight_data = flight.get_dto()
+
             flight_data['sensors'] = {
+                'all_times': [flight.time for flight in flights],
                 'accelerometers': [sensor.get_dto() for sensor in accelerometers],
                 'barometers': [sensor.get_dto() for sensor in barometers],
                 'gps_data': [sensor.get_dto() for sensor in gps_data],
                 'gyroscopes': [sensor.get_dto() for sensor in gyroscopes],
                 'magnetometers': [sensor.get_dto() for sensor in magnetometers],
                 'temperatures': [sensor.get_dto() for sensor in temperatures],
-                'time': flight.time,
             }
 
             return flight_data
-
