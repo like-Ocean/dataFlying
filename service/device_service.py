@@ -200,7 +200,7 @@ async def get_flight_by_flight_number(user_id: int, flight_number: int, IMEI: st
 
             flight_data['sensors'] = {
                 'all_times': [
-                    {'time': flight.time, 'flight': {'id': flight.id}} for flight in flights
+                    {'time': flight.time, 'flight': {'id': flight.id}, 'id': flight.id} for flight in flights
                 ],
                 'accelerometers': [sensor.get_dto() for sensor in accelerometers],
                 'barometers': [sensor.get_dto() for sensor in barometers],
