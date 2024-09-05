@@ -172,22 +172,28 @@ async def get_flight_by_flight_number(user_id: int, flight_number: int, IMEI: st
 
         for flight in flights:
             accelerometers = await objects.execute(
-                Accelerometer.select().join(Flight).where(Flight.flight_number == flight_number)
+                Accelerometer.select().join(Flight).join(Device).where(
+                    (Flight.flight_number == flight_number) & (Device.IMEI == IMEI))
             )
             barometers = await objects.execute(
-                Barometer.select().join(Flight).where(Flight.flight_number == flight_number)
+                Barometer.select().join(Flight).join(Device).where(
+                    (Flight.flight_number == flight_number) & (Device.IMEI == IMEI))
             )
             gps_data = await objects.execute(
-                Gps.select().join(Flight).where(Flight.flight_number == flight_number)
+                Gps.select().join(Flight).join(Device).where(
+                    (Flight.flight_number == flight_number) & (Device.IMEI == IMEI))
             )
             gyroscopes = await objects.execute(
-                Gyroscope.select().join(Flight).where(Flight.flight_number == flight_number)
+                Gyroscope.select().join(Flight).join(Device).where(
+                    (Flight.flight_number == flight_number) & (Device.IMEI == IMEI))
             )
             magnetometers = await objects.execute(
-                Magnetometer.select().join(Flight).where(Flight.flight_number == flight_number)
+                Magnetometer.select().join(Flight).join(Device).where(
+                    (Flight.flight_number == flight_number) & (Device.IMEI == IMEI))
             )
             temperatures = await objects.execute(
-                Temperature.select().join(Flight).where(Flight.flight_number == flight_number)
+                Temperature.select().join(Flight).join(Device).where(
+                    (Flight.flight_number == flight_number) & (Device.IMEI == IMEI))
             )
 
             flight_data = flight.get_dto()
