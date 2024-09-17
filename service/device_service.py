@@ -49,7 +49,7 @@ async def get_and_write_data(data):
         Z=data.acceleration.z
     )
 
-    await objects.create(Barometer, flight=flight, pressure=data.pressure)
+    await objects.create(Barometer, flight=flight, pressure=data.pressure, speed_air=data.speed_air)
 
     await objects.create(
         Gps,

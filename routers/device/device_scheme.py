@@ -39,6 +39,7 @@ class SensorDataModel(BaseModel):
     temperature_mpu: float = Field(...)
     temperature_bmp: float = Field(...)
     pressure: float = Field(...)
+    speed_air: float = Field(...)
     altitude: float = Field(...)
     latitude: float = Field(...)
     longitude: float = Field(...)

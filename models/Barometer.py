@@ -7,6 +7,7 @@ class Barometer(BaseModel):
     id = AutoField(primary_key=True, unique=True)
     flight = ForeignKeyField(Flight, backref='barometers', on_delete='CASCADE')
     pressure = FloatField(null=False)
+    speed_air = FloatField(null=False)
 
     def get_dto(self):
         return {
@@ -14,7 +15,8 @@ class Barometer(BaseModel):
             'flight': {
                 'id': self.flight.id,
             },
-            'pressure': self.pressure
+            'pressure': self.pressure,
+            'speed_air': self.speed_air
         }
 
     class Meta:
