@@ -2,7 +2,8 @@ from typing import Optional
 from datetime import datetime
 from fastapi import HTTPException
 from peewee import DoesNotExist, fn
-from models import User, Device, Flight, Accelerometer, Barometer, Gps, Gyroscope, Magnetometer, Temperature
+from models import (User, Device, Flight, Accelerometer, Barometer, Gps, Gyroscope,
+                    Magnetometer, Temperature, Session)
 
 from database import objects
 
@@ -211,3 +212,17 @@ async def get_flight_by_flight_number(user_id: int, flight_number: int, IMEI: st
             }
 
             return flight_data
+
+
+async def delete_all_data():
+    await objects.execute(Session.delete().execute())
+    await objects.execute(Accelerometer.delete().execute())
+    await objects.execute(Barometer.delete().execute())
+    await objects.execute(Gps.delete().execute())
+    await objects.execute(Gyroscope.delete().execute())
+    await objects.execute(Magnetometer.delete().execute())
+    await objects.execute(Temperature.delete().execute())
+    await objects.execute(Flight.delete().execute())
+    await objects.execute(Device.delete().execute())
+    await objects.execute(User.delete().execute())
+    return {"message": "All data has been deleted successfully"}
