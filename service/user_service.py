@@ -83,22 +83,13 @@ async def get_current_user(request: Request):
     return user
 
 
-async def change_password(user_id: int, password: str):
-    user = await objects.get_or_none(User.select().where(User.id == user_id))
-    if not user:
-        raise HTTPException(status_code=400, detail="User not found")
-    validate_password(password)
-    user.password = generate_password_hash(password)
-    await objects.update(user)
-
-
-async def delete(user_id: int):
-    user = await objects.get_or_none(User.select().where(User.id == user_id))
-    if not user:
-        raise HTTPException(status_code=400, detail="User not found")
-
-    user = User.delete().where(User.id == user_id)
-    await objects.execute(user)
+# async def change_password(user_id: int, password: str):
+#     user = await objects.get_or_none(User.select().where(User.id == user_id))
+#     if not user:
+#         raise HTTPException(status_code=400, detail="User not found")
+#     validate_password(password)
+#     user.password = generate_password_hash(password)
+#     await objects.update(user)
 
 
 async def get_users():

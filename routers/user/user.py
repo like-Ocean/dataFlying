@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Response, Request, HTTPException, Depends
 from starlette.responses import JSONResponse
 
-from models import User
+# from models import User
 from service import user_service
-from service.user_service import get_current_user
+# from service.user_service import get_current_user
 from .user_scheme import (RegisterModel, DeleteUserModel, ChangePasswordModel, Authorization)
 
 user_router = APIRouter(prefix="/users", tags=["users"])
@@ -45,16 +45,10 @@ async def logout():
     return response
 
 
-@user_router.patch("/user/edit/password")
-async def edit_password(user: ChangePasswordModel, current_user: User = Depends(get_current_user)):
-    await user_service.change_password(user.user_id, user.password)
-    return Response(status_code=200)
-
-
-@user_router.delete("/user/delete")
-async def delete_user(user: DeleteUserModel, current_user: User = Depends(get_current_user)):
-    await user_service.delete(user.user_id)
-    return Response(status_code=204)
+# @user_router.patch("/user/edit/password")
+# async def edit_password(user: ChangePasswordModel, current_user: User = Depends(get_current_user)):
+#     await user_service.change_password(user.user_id, user.password)
+#     return Response(status_code=200)
 
 
 @user_router.get("/")
