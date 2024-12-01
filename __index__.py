@@ -23,7 +23,7 @@ async def lifespan(app: FastAPI):
     yield
     db.close()
 
-app = FastAPI(lifespan=lifespan, docs_url="/api/docs")
+app = FastAPI(lifespan=lifespan, docs_url=None, redoc_url=None)
 
 for router in routes:
     app.include_router(router, prefix="/api")
